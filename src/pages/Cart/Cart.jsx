@@ -26,13 +26,22 @@ import { Link } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons';
 import {
    addToCart,
+   clearCart,
    decreaseQuantity,
+   getTotals,
    removeFromCart,
 } from '../../features/cart/cartSlice';
+import { useEffect } from 'react';
 
 const Cart = () => {
-   const { cartItems, cartTotalAmount } = useSelector((state) => state.cart);
+   const cart = useSelector((state) => state.cart);
+   const { cartItems, cartTotalAmount } = cart;
+
    const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch(getTotals());
+   }, [cart, dispatch]);
 
    const removeFromCartHandler = (cartItem) => {
       dispatch(removeFromCart(cartItem));
@@ -44,6 +53,10 @@ const Cart = () => {
 
    const increaseQuantityHandler = (cartItem) => {
       dispatch(addToCart(cartItem));
+   };
+
+   const clearCartHandler = () => {
+      dispatch(clearCart());
    };
 
    return (
@@ -112,7 +125,9 @@ const Cart = () => {
                      })}
                </CartItems>
                <CartSummary>
-                  <ClearButton>Clear Cart</ClearButton>
+                  <ClearButton onClick={clearCartHandler}>
+                     Clear Cart
+                  </ClearButton>
                   <CartCheckout>
                      <SubTotal>
                         <span>Subtotal</span>
