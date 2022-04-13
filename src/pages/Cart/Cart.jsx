@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
    CardContainer,
    CardEmpty,
@@ -24,9 +24,27 @@ import {
 } from './styles';
 import { Link } from 'react-router-dom';
 import { ArrowLeftIcon } from '../../components/Icons';
+import {
+   addToCart,
+   decreaseQuantity,
+   removeFromCart,
+} from '../../features/cart/cartSlice';
 
 const Cart = () => {
    const { cartItems, cartTotalAmount } = useSelector((state) => state.cart);
+   const dispatch = useDispatch();
+
+   const removeFromCartHandler = (cartItem) => {
+      dispatch(removeFromCart(cartItem));
+   };
+
+   const decreaseQuantityHandler = (cartItem) => {
+      dispatch(decreaseQuantity(cartItem));
+   };
+
+   const increaseQuantityHandler = (cartItem) => {
+      dispatch(addToCart(cartItem));
+   };
 
    return (
       <CardContainer>
@@ -51,27 +69,47 @@ const Cart = () => {
                </Titles>
                <CartItems>
                   {cartItems &&
-                     cartItems.map((cartItem) => (
-                        <CartItem key={cartItem.id}>
-                           <CartProduct>
-                              <img src={cartItem.image} alt={cartItem.name} />
-                              <div>
-                                 <h3>{cartItem.name}</h3>
-                                 <p>{cartItem.desc}</p>
-                                 <button>Remove</button>
-                              </div>
-                           </CartProduct>
-                           <CartPrice>${cartItem.price}</CartPrice>
-                           <CartQuantity>
-                              <button>-</button>
-                              <Count>{cartItem.quantity}</Count>
-                              <button>+</button>
-                           </CartQuantity>
-                           <TotalPrice>
-                              ${cartItem.price * cartItem.quantity}
-                           </TotalPrice>
-                        </CartItem>
-                     ))}
+                     cartItems.map((cartItem) => {
+                        const { id, name, image, desc, price, quantity } =
+                           cartItem;
+                        return (
+                           <CartItem key={id}>
+                              <CartProduct>
+                                 <img src={image} alt={name} />
+                                 <div>
+                                    <h3>{name}</h3>
+                                    <p>{desc}</p>
+                                    <button
+                                       onClick={() =>
+                                          removeFromCartHandler(cartItem)
+                                       }
+                                    >
+                                       Remove
+                                    </button>
+                                 </div>
+                              </CartProduct>
+                              <CartPrice>${price}</CartPrice>
+                              <CartQuantity>
+                                 <button
+                                    onClick={() =>
+                                       decreaseQuantityHandler(cartItem)
+                                    }
+                                 >
+                                    -
+                                 </button>
+                                 <Count>{quantity}</Count>
+                                 <button
+                                    onClick={() =>
+                                       increaseQuantityHandler(cartItem)
+                                    }
+                                 >
+                                    +
+                                 </button>
+                              </CartQuantity>
+                              <TotalPrice>${price * quantity}</TotalPrice>
+                           </CartItem>
+                        );
+                     })}
                </CartItems>
                <CartSummary>
                   <ClearButton>Clear Cart</ClearButton>
