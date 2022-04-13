@@ -64,11 +64,11 @@ const Cart = () => {
                            <CartPrice>${cartItem.price}</CartPrice>
                            <CartQuantity>
                               <button>-</button>
-                              <Count>{cartItem.cartQuantity}</Count>
+                              <Count>{cartItem.quantity}</Count>
                               <button>+</button>
                            </CartQuantity>
                            <TotalPrice>
-                              ${cartItem.price * cartItem.cartQuantity}
+                              ${cartItem.price * cartItem.quantity}
                            </TotalPrice>
                         </CartItem>
                      ))}
